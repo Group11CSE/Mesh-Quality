@@ -34,7 +34,18 @@ int main(int argc, char *argv[]){
     }
     
 
+    // GMSH is basically a state machine, which makes interfacing with C++
+    // Kinda akward, so we have to first abstract the mesh object, in order to keep it
+    // OOP
+    gmsh::initialize();
+    gmsh::option::setNumber("General.Terminal", 1);
 
+    gmsh::open("example.msh");
+    gmsh::model::mesh::refine();
+    gmsh::fltk::run();
+
+
+    gmsh::finalize();
 
     END_PROFILING_SESSION();
 }

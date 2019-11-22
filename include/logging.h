@@ -81,39 +81,39 @@ namespace Mesh_Quality{
             m_level = level;
         }
 
-        template <class T, class... Ts>
-        void Info(T const& first, Ts const&... rest){
+        template <class... Ts>
+        void Info( Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
             message << "INFO:\t\t";
-            assembler(message, first, rest...);
+            assembler(message, args...);
             Log(message.str(), LogLevel::Info);
         }
 
-        template <class T, class... Ts>
-        void Warn(T const& first, Ts const&... rest){
+        template <class... Ts>
+        void Warn(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
             message << "WARNING:\t";
-            assembler(message, first, rest...);
+            assembler(message, args...);
             Log(message.str(), LogLevel::Warn);
         }
 
-        template <class T, class... Ts>
-        void Error(T const& first, Ts const&... rest){
+        template <class... Ts>
+        void Error(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
             message << "ERROR:\t\t";
-            assembler(message, first, rest...);
+            assembler(message, args...);
             Log(message.str(), LogLevel::Error);
         }
 
-        template <class T, class... Ts>
-        void Fatal(T const& first, Ts const&... rest){
+        template <class... Ts>
+        void Fatal(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
             message << "FATAL:\t\t";
-            assembler(message, first, rest...);
+            assembler(message, args...);
             Log(message.str(), LogLevel::Fatal);
         }
 
