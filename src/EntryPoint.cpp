@@ -15,6 +15,7 @@ int main(int argc, char *argv[]){
     START_PROFILING_SESSION("Main");
     InstrumentationTimer timer(_CUSTOM_FUNC_SIG_);
     Mesh_Quality::Logger::Get().BeginSession("Main Logging");
+    Mesh_Quality::Logger::Get().SetLogLevel(Mesh_Quality::LogLevel::Info);
     #ifdef DEBUG
         Mesh_Quality::Logger::Get().Info("Running in DEBUG MODE");
     #else
@@ -36,8 +37,8 @@ int main(int argc, char *argv[]){
     
     try{
         Mesh_Quality::GmshHandler::Get().LoadMesh("example.msh");
-        Mesh_Quality::GmshHandler::Get().RefineMesh(1);
-        Mesh_Quality::GmshHandler::Get().GetNodes();
+        auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
+        std::cout << mesh << std::endl;
     }
     catch(const Mesh_Quality::NoMeshLoadedException& e){
         Mesh_Quality::Logger::Get().Error("No Mesh loaded anymore");

@@ -2,6 +2,7 @@
 // failing would b ein a build enviroment that copies files a lot, whic does not happen
 #pragma once
 #include <pch.h>
+#include <mesh.h>
 
 /**
  * Class to wrap the gmsh interface and abstract operations
@@ -49,8 +50,8 @@ namespace Mesh_Quality{
 
         static GmshHandler& Get(){
             PROFILE_FUNCTION;
-            static GmshHandler Mesh;
-            return Mesh;
+            static GmshHandler GmshHandler;
+            return GmshHandler;
         }
 
         void LoadMesh(const std::string& filepath){
@@ -78,15 +79,21 @@ namespace Mesh_Quality{
             gmsh::fltk::run();
         }
 
-        void GetNodes(){
+        // As a mesh can be quite big we want it to be heap allocated
+        // Raw pointers are very dangerous for working so a shared pointer is used
+        Mesh GetExplicitMesh(){
             PROFILE_FUNCTION;
             if (!m_meshloaded){
                 throw NoMeshLoadedException();
             }
-            std::vector<std::size_t> tags;
-            std::vector<double> coords;
-            std::vector<double> parametric;
-            gmsh::model::mesh::getNodes(tags, coords, parametric);
+            Logger::Get().Info("Creating Mesh pointer");
+            Mesh mesh;
+            Logger::Get().Info("Created Mesh pointer");
+            gmsh::model::mesh::getNodes(mesh.m_nodeTags, mesh.m_nodeCoords, mesh.m_nodeParaCoords);
+            Logger::Get().Info("Filled Node Info");
+            gmsh::model::mesh::getElements(mesh.m_elementTypes, mesh.m_elementTags, mesh.m_nodeTagsElems);
+            Logger::Get().Info("Filled Element Info");
+            return mesh;
         }
     }; 
 }

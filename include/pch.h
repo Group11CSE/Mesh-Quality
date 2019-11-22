@@ -12,6 +12,7 @@
 #include <logging.h>
 #include <profiling.h>
 #include <functional>
+#include <memory>
 #include <gmsh.h>
 
 
