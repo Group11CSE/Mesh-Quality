@@ -1,6 +1,6 @@
 #include <iostream>
 #include <pch.h>
-#include <mesh.h>
+#include <gmshhandler.h>
 
 // In order to profile a function
 // Note this introduces an overhead, in order to disable profiling got to profiling.h and undef PROFILING
@@ -13,6 +13,7 @@ void test_function(void){
 int main(int argc, char *argv[]){
     // Starting Profiling and Logging session
     START_PROFILING_SESSION("Main");
+    InstrumentationTimer timer(_CUSTOM_FUNC_SIG_);
     Mesh_Quality::Logger::Get().BeginSession("Main Logging");
     #ifdef DEBUG
         Mesh_Quality::Logger::Get().Info("Running in DEBUG MODE");
@@ -28,14 +29,15 @@ int main(int argc, char *argv[]){
     // Mesh_Quality::Logger::Get().Fatal("Not everything", "but if the type implements << i can print it");
 
     // Profile a scope like this
-    {
-        PROFILE_SCOPE("A SCOPE THAT I PROFILE");
-        int a = 1 + 2;
-    }
+    // {
+    //     PROFILE_SCOPE("A SCOPE THAT I PROFILE");
+    //     int a = 1 + 2;
+    // }
     
     try{
-        Mesh_Quality::Mesh::Get().LoadMesh("example.msh");
-        Mesh_Quality::Mesh::Get().RefineMesh(5);
+        Mesh_Quality::GmshHandler::Get().LoadMesh("example.msh");
+        Mesh_Quality::GmshHandler::Get().RefineMesh(1);
+        Mesh_Quality::GmshHandler::Get().GetNodes();
     }
     catch(const Mesh_Quality::NoMeshLoadedException& e){
         Mesh_Quality::Logger::Get().Error("No Mesh loaded anymore");
@@ -44,5 +46,6 @@ int main(int argc, char *argv[]){
         Mesh_Quality::Logger::Get().Fatal("An exception Occured that is not related to the Mesh Qualityu module:", e.what());
     }
 
+    timer.~InstrumentationTimer();
     END_PROFILING_SESSION();
 }
