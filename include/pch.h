@@ -11,6 +11,8 @@
 #include <vector>
 #include <logging.h>
 #include <profiling.h>
+#include <functional>
+#include <gmsh.h>
 
 
 // Debugging build detection

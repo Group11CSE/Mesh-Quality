@@ -16,12 +16,6 @@
 #include <profiling.h>
 
 namespace Mesh_Quality{
-    struct ProfileResult{
-        std::string Name;
-        long long Start, End;
-        uint32_t ThreadID;
-    };
-
     struct LoggingSession{
         std::string Name;
     };
@@ -85,7 +79,7 @@ namespace Mesh_Quality{
         void Info( Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
-            message << "INFO:\t\t";
+            message << "INFO_MQ:\t";
             assembler(message, args...);
             Log(message.str(), LogLevel::Info);
         }
@@ -94,7 +88,7 @@ namespace Mesh_Quality{
         void Warn(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
-            message << "WARNING:\t";
+            message << "WARNING_MQ:\t";
             assembler(message, args...);
             Log(message.str(), LogLevel::Warn);
         }
@@ -103,7 +97,7 @@ namespace Mesh_Quality{
         void Error(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
-            message << "ERROR:\t\t";
+            message << "ERROR_MQ:\t";
             assembler(message, args...);
             Log(message.str(), LogLevel::Error);
         }
@@ -112,7 +106,7 @@ namespace Mesh_Quality{
         void Fatal(Ts const&... args){
             PROFILE_FUNCTION;
             std::stringstream message;
-            message << "FATAL:\t\t";
+            message << "FATAL_MQ:\t";
             assembler(message, args...);
             Log(message.str(), LogLevel::Fatal);
         }
