@@ -14,6 +14,7 @@
 #include <functional>
 #include <memory>
 #include <gmsh.h>
+#include <mqexception.h>
 
 
 // Debugging build detection

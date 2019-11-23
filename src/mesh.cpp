@@ -32,4 +32,18 @@ namespace Mesh_Quality{
         }
 
     }
+    
+    std::map<std::size_t, double> Mesh::Area(){
+        PROFILE_FUNCTION;
+        std::map<std::size_t, double> areas;
+        for(auto const& element: m_elements){
+            try{
+                areas[element.first] = element.second->Area(m_vertices);
+            }
+            catch(std::exception& e){
+                throw;
+            }
+        }
+        return areas;
+    }
 }

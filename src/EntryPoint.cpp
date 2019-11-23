@@ -36,14 +36,14 @@ int main(int argc, char *argv[]){
     // }
     
     try{
-        Mesh_Quality::GmshHandler::Get().LoadMesh("example.msh");
+        Mesh_Quality::GmshHandler::Get().LoadMesh("circle_2d.msh");
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
+        auto areas = mesh.Area();
+        Mesh_Quality::GmshHandler::Get().DisplayElementData("Area", areas);
+        Mesh_Quality::GmshHandler::Get().Display();
     }
-    catch(Mesh_Quality::NoMeshLoadedException& e){
-        Mesh_Quality::Logger::Get().Error(e.what());
-    }
-    catch(Mesh_Quality::GmshNotInitializedException& e){
-        Mesh_Quality::Logger::Get().Error(e.what());
+    catch(Mesh_Quality::MqException& e){
+        Mesh_Quality::Logger::Get().Error("An Error occured in the module:", e.what());
     }
     catch(const std::exception& e){
         Mesh_Quality::Logger::Get().Fatal("An exception Occured that is not related to the Mesh Qualityu module:", e.what());

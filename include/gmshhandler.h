@@ -4,6 +4,8 @@
 #include <pch.h>
 #include <mesh.h>
 
+#define MQ_CHECK_STATUS_VALID if (!m_meshloaded){throw NoMeshLoadedException();}if (!m_gmsh_init){throw GmshNotInitializedException();}
+
 /**
  * Class to wrap the gmsh interface and abstract operations
  * \author Malte Wegener
@@ -17,14 +19,14 @@
  */
 
 namespace Mesh_Quality{
-    class NoMeshLoadedException: std::exception{
+    class NoMeshLoadedException: MqException{
     public:
         const char* what(){
             return "No Mesh is loaded in the module";
         }
     };
 
-    class GmshNotInitializedException: std::exception{
+    class GmshNotInitializedException: MqException{
     public:
         const char* what(){
             return "Gmsh isnt initialized";
@@ -37,6 +39,7 @@ namespace Mesh_Quality{
         bool m_meshloaded = false;
         bool m_gmsh_init= false;
         std::string m_name = "Empty Name";
+        int m_tag;
         // Disallow instantiation outside of the class
         GmshHandler(){
             PROFILE_FUNCTION;
@@ -50,6 +53,21 @@ namespace Mesh_Quality{
             Logger::Get().Info("Finalizing GMSH");
             gmsh::finalize();
             m_gmsh_init = false;
+        }
+
+        std::pair<std::vector<std::size_t>, std::vector<std::vector<double>>>
+        getKeysValues(const std::map<std::size_t, double> &f){
+            std::vector<std::size_t> keys;
+            std::vector<std::vector<double>> values;
+            keys.clear();
+            values.clear();
+            for(std::map<std::size_t, double>::const_iterator it = f.begin();
+                it != f.end(); it++){
+                keys.push_back(it->first);
+                values.push_back(std::vector<double>(1, it->second));
+            }
+
+            return std::make_pair<>(keys, values);
         }
 
     public:
@@ -75,24 +93,14 @@ namespace Mesh_Quality{
 
         void RefineMesh(int n){
             PROFILE_FUNCTION;
-            if (!m_meshloaded){
-                throw NoMeshLoadedException();
-            }
-            if (!m_gmsh_init){
-                throw GmshNotInitializedException();
-            }
+            MQ_CHECK_STATUS_VALID;
             for(int i = 0; i < n; i++){
                 gmsh::model::mesh::refine();
             }
         }
 
         void Display(){
-            if (!m_meshloaded){
-                throw NoMeshLoadedException();
-            }
-            if (!m_gmsh_init){
-                throw GmshNotInitializedException();
-            }
+            MQ_CHECK_STATUS_VALID;
             m_meshloaded = false;
             gmsh::fltk::run();
         }
@@ -101,12 +109,7 @@ namespace Mesh_Quality{
         // Raw pointers are very dangerous for working so a shared pointer is used
         Mesh GetExplicitMesh(){
             PROFILE_FUNCTION;
-            if (!m_meshloaded){
-                throw NoMeshLoadedException();
-            }
-            if (!m_gmsh_init){
-                throw GmshNotInitializedException();
-            }
+            MQ_CHECK_STATUS_VALID;
             // Soem containers to store the different things a mesh consists of
             std::vector<std::size_t> nodeTags;
             std::vector<double> nodeCoords;
@@ -124,5 +127,27 @@ namespace Mesh_Quality{
             Mesh mesh(m_name, nodeTags, nodeCoords, elementTypes, elementTags, nodeTagsElems);
             return mesh;
         }
+
+        void DisplayElementData(const std::string& name, const std::map<std::size_t, double> data){
+            PROFILE_FUNCTION;
+            MQ_CHECK_STATUS_VALID;
+
+            int data_view = gmsh::view::add(name);
+            auto data_pair = getKeysValues(data);
+            std::vector<std::string> names;
+            gmsh::model::list(names);
+
+            gmsh::vectorpair dimtag;
+            gmsh::model::getEntities(dimtag);
+
+            gmsh::view::addModelData(dimtag[0].second, 0, names[0], "ElementData", data_pair.first, data_pair.second);
+            
+        }
+        void RunDisplay(){
+            m_meshloaded = false;
+            gmsh::fltk::run();
+        }
     }; 
 }
+
+#undef MQ_CHECK_STATUS_VALID

@@ -18,6 +18,7 @@ namespace Mesh_Quality{
                 std::vector<std::vector<std::size_t>>& elementTags,
                 std::vector<std::vector<std::size_t>>& nodeTagsElems);
         
+        std::map<std::size_t, double> Area();
     private:
         std::string m_name = "No Name";
         std::map<std::size_t, std::unique_ptr<Vertex>> m_vertices;
