@@ -38,3 +38,4 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra")
 file(GLOB main_sources . src/*.cpp)
 
 add_subdirectory(src)
+add_subdirectory(Example)

@@ -40,8 +40,11 @@ int main(int argc, char *argv[]){
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
         std::cout << mesh << std::endl;
     }
-    catch(const Mesh_Quality::NoMeshLoadedException& e){
-        Mesh_Quality::Logger::Get().Error("No Mesh loaded anymore");
+    catch(Mesh_Quality::NoMeshLoadedException& e){
+        Mesh_Quality::Logger::Get().Error(e.what());
+    }
+    catch(Mesh_Quality::GmshNotInitializedException& e){
+        Mesh_Quality::Logger::Get().Error(e.what());
     }
     catch(const std::exception& e){
         Mesh_Quality::Logger::Get().Fatal("An exception Occured that is not related to the Mesh Qualityu module:", e.what());

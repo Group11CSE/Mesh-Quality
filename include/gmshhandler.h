@@ -24,21 +24,32 @@ namespace Mesh_Quality{
         }
     };
 
+    class GmshNotInitializedException: std::exception{
+    public:
+        const char* what(){
+            return "Gmsh isnt initialized";
+        }
+    };
+
 
     class GmshHandler{
     private:
         bool m_meshloaded = false;
+        bool m_gmsh_init= false;
+        std::string m_name = "Empty Name";
         // Disallow instantiation outside of the class
         GmshHandler(){
             PROFILE_FUNCTION;
-            Logger::Get().Info("Constructor Called in Class Mesh");
+            Logger::Get().Info("Initializing GMSH");
             gmsh::initialize();
             gmsh::option::setNumber("General.Terminal", 2);
+            m_gmsh_init = true;
         }
         ~GmshHandler(){
             PROFILE_FUNCTION;
-            Logger::Get().Info("Deconstructor Called in Class Mesh");
+            Logger::Get().Info("Finalizing GMSH");
             gmsh::finalize();
+            m_gmsh_init = false;
         }
 
     public:
@@ -58,6 +69,7 @@ namespace Mesh_Quality{
             PROFILE_FUNCTION;
             Logger::Get().Info("Loading Mesh from file:", filepath);
             gmsh::open(filepath);
+            m_name = filepath;
             m_meshloaded = true;
         }
 
@@ -65,6 +77,9 @@ namespace Mesh_Quality{
             PROFILE_FUNCTION;
             if (!m_meshloaded){
                 throw NoMeshLoadedException();
+            }
+            if (!m_gmsh_init){
+                throw GmshNotInitializedException();
             }
             for(int i = 0; i < n; i++){
                 gmsh::model::mesh::refine();
@@ -74,6 +89,9 @@ namespace Mesh_Quality{
         void Display(){
             if (!m_meshloaded){
                 throw NoMeshLoadedException();
+            }
+            if (!m_gmsh_init){
+                throw GmshNotInitializedException();
             }
             m_meshloaded = false;
             gmsh::fltk::run();
@@ -86,14 +104,22 @@ namespace Mesh_Quality{
             if (!m_meshloaded){
                 throw NoMeshLoadedException();
             }
-            Logger::Get().Info("Creating Mesh pointer");
-            Mesh mesh;
-            Logger::Get().Info("Created Mesh pointer");
-            gmsh::model::mesh::getNodes(mesh.m_nodeTags, mesh.m_nodeCoords, mesh.m_nodeParaCoords);
+            if (!m_gmsh_init){
+                throw GmshNotInitializedException();
+            }
+            // Soem containers to store the different things a mesh consists of
+            std::vector<std::size_t> m_nodeTags;
+            std::vector<double> m_nodeCoords;
+            std::vector<double> m_nodeParaCoords;
+            std::vector<int> m_elementTypes;
+            std::vector<std::vector<std::size_t>> m_elementTags;
+            std::vector<std::vector<std::size_t>> m_nodeTagsElems;
+
+
+            gmsh::model::mesh::getNodes(m_nodeTags, m_nodeCoords, m_nodeParaCoords);
             Logger::Get().Info("Filled Node Info");
-            gmsh::model::mesh::getElements(mesh.m_elementTypes, mesh.m_elementTags, mesh.m_nodeTagsElems);
+            gmsh::model::mesh::getElements(m_elementTypes, m_elementTags, m_nodeTagsElems);
             Logger::Get().Info("Filled Element Info");
-            return mesh;
         }
     }; 
 }
