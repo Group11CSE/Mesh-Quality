@@ -12,16 +12,16 @@ namespace Mesh_Quality{
     class Mesh{
     public:
         Mesh(   std::string& name,
-                std::vector<int> Nodetags,
-                std::vector<double> nodeCoords,
-                std::vector<int> m_elementTypes,
-                std::vector<std::vector<std::size_t>> elementTags,
-                std::vector<std::vector<std::size_t>> nodeTagsElems);
+                std::vector<std::size_t>& nodetags,
+                std::vector<double>& nodeCoords,
+                std::vector<int>& elementTypes,
+                std::vector<std::vector<std::size_t>>& elementTags,
+                std::vector<std::vector<std::size_t>>& nodeTagsElems);
         
     private:
         std::string m_name = "No Name";
-        std::map<std::size_t, std::unique_ptr<Vertex>> Vertices;
-        std::map<std::size_t, std::unique_ptr<Element>> Elements;
+        std::map<std::size_t, std::unique_ptr<Vertex>> m_vertices;
+        std::map<std::size_t, std::unique_ptr<Element>> m_elements;
 
 
     };

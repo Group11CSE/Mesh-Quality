@@ -29,5 +29,5 @@ namespace Mesh_Quality{
     private:
         int m_type;
         std::vector<std::size_t> m_tags;
-    }
+    };
 }

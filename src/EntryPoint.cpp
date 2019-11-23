@@ -38,7 +38,6 @@ int main(int argc, char *argv[]){
     try{
         Mesh_Quality::GmshHandler::Get().LoadMesh("example.msh");
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
-        std::cout << mesh << std::endl;
     }
     catch(Mesh_Quality::NoMeshLoadedException& e){
         Mesh_Quality::Logger::Get().Error(e.what());

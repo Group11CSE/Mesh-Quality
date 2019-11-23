@@ -108,18 +108,21 @@ namespace Mesh_Quality{
                 throw GmshNotInitializedException();
             }
             // Soem containers to store the different things a mesh consists of
-            std::vector<std::size_t> m_nodeTags;
-            std::vector<double> m_nodeCoords;
-            std::vector<double> m_nodeParaCoords;
-            std::vector<int> m_elementTypes;
-            std::vector<std::vector<std::size_t>> m_elementTags;
-            std::vector<std::vector<std::size_t>> m_nodeTagsElems;
+            std::vector<std::size_t> nodeTags;
+            std::vector<double> nodeCoords;
+            std::vector<double> nodeParaCoords;
+            std::vector<int> elementTypes;
+            std::vector<std::vector<std::size_t>> elementTags;
+            std::vector<std::vector<std::size_t>> nodeTagsElems;
 
 
-            gmsh::model::mesh::getNodes(m_nodeTags, m_nodeCoords, m_nodeParaCoords);
+            gmsh::model::mesh::getNodes(nodeTags, nodeCoords, nodeParaCoords);
             Logger::Get().Info("Filled Node Info");
-            gmsh::model::mesh::getElements(m_elementTypes, m_elementTags, m_nodeTagsElems);
+            gmsh::model::mesh::getElements(elementTypes, elementTags, nodeTagsElems);
             Logger::Get().Info("Filled Element Info");
+            Logger::Get().Info("Making mesh");
+            Mesh mesh(m_name, nodeTags, nodeCoords, elementTypes, elementTags, nodeTagsElems);
+            return mesh;
         }
     }; 
 }
