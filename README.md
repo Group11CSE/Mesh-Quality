@@ -1,5 +1,5 @@
 # Mesh-Quality
-A C++ module for evaluating the quality of meshes use din structural Dynamics
+A C++ module for evaluating the quality of 2D meshes used in structural Dynamics
 
 ## How to build
 1. make a build directory
