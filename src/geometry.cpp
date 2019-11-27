@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
 
-#include <exception>
+#include <geometry.h>
+
 
 namespace Mesh_Quality{
-    class MqException: std::exception{
-    public:
-        const char* what() const noexcept {return "Mesh Quality Module Error";};
-    };
+    std::ostream& operator<<(std::ostream& os, const Vertex& vert){
+        os << "x: " << vert.m_x << ", y: " << vert.m_y << ", z: " << vert.m_x;
+        return os;
+    }
 }
