@@ -1,19 +1,31 @@
 #pragma once
 
 #include <pch.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Polygon_2.h>
+
+
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+typedef K::Point_2 Point;
+typedef CGAL::Polygon_2<K> Polygon_2;
 
 namespace Mesh_Quality{
 
     class NotSupportedException: MqException{
-        public: const char* what(){return "The requested functionality is not supported";};
+    public:
+        const char* what() const noexcept {return "The requested functionality is not supported";};
     };
     class Vertex{
     public:
         Vertex(double x, double y, double z): m_x(x), m_y(y), m_z(z){};
+        friend std::ostream& operator<<(std::ostream& os, const Vertex& vert);
         double m_x;
         double m_y;
         double m_z; 
     };
+
+    std::ostream& operator<<(std::ostream& os, const Vertex& vert);
 
     class Element{
     public:
@@ -30,24 +42,21 @@ namespace Mesh_Quality{
 
 
         // TODO: Implem,ent a function that returns skewness, aspect ratio etc
-        double Area(const std::map<std::size_t, std::unique_ptr<Vertex>>& vertices){
+        double Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices){
             PROFILE_FUNCTION;
-            if(m_tags.size() == 4){
-                const double x1 = vertices.at(m_tags[0])->m_x;
-                const double y1 = vertices.at(m_tags[0])->m_y;
-                const double x2 = vertices.at(m_tags[1])->m_x;
-                const double y2 = vertices.at(m_tags[1])->m_y;
-                const double x3 = vertices.at(m_tags[2])->m_x;
-                const double y3 = vertices.at(m_tags[2])->m_y;
-                const double x4 = vertices.at(m_tags[3])->m_x;
-                const double y4 = vertices.at(m_tags[3])->m_y;
+            std::vector<Point> points;
 
-                double area = 0.5*(x1*y2+x2*y3+x3*y4+x4*y1-x2*y1-x3*y2-x4*y3-x1*y4);
-                return m_tags[0];
+            for(const auto &tag: m_tags){
+                auto p = vertices.find(tag);
+                if(p == vertices.end()) throw NotSupportedException();
+                double x = p->second->m_x;
+                double y = p->second->m_y;
+                points.push_back(Point(x, y));
             }
-            else{
-                throw NotSupportedException();
-            }
+
+            Polygon_2 polygon (points.begin(), points.end());
+            double area = polygon.area();
+            return area;
         };
     private:
         int m_type;

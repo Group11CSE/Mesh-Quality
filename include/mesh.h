@@ -19,11 +19,15 @@ namespace Mesh_Quality{
                 std::vector<std::vector<std::size_t>>& nodeTagsElems);
         
         std::map<std::size_t, double> Area();
+        friend std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
     private:
         std::string m_name = "No Name";
-        std::map<std::size_t, std::unique_ptr<Vertex>> m_vertices;
-        std::map<std::size_t, std::unique_ptr<Element>> m_elements;
+        std::map<std::size_t, std::shared_ptr<Vertex>> m_vertices;
+        std::map<std::size_t, std::shared_ptr<Element>> m_elements;
 
 
     };
+
+
+    std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
 }

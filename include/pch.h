@@ -15,6 +15,7 @@
 #include <memory>
 #include <gmsh.h>
 #include <mqexception.h>
+#include <string_view>
 
 
 // Debugging build detection

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <pch.h>
 #include <gmshhandler.h>
+#include <CGAL/AABB_tree.h>
 
 // In order to profile a function
 // Note this introduces an overhead, in order to disable profiling got to profiling.h and undef PROFILING
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]){
     START_PROFILING_SESSION("Main");
     InstrumentationTimer timer(_CUSTOM_FUNC_SIG_);
     Mesh_Quality::Logger::Get().BeginSession("Main Logging");
-    Mesh_Quality::Logger::Get().SetLogLevel(Mesh_Quality::LogLevel::Info);
+    Mesh_Quality::Logger::Get().SetLogLevel(Mesh_Quality::LogLevel::Warn);
     #ifdef DEBUG
         Mesh_Quality::Logger::Get().Info("Running in DEBUG MODE");
     #else
@@ -34,9 +35,13 @@ int main(int argc, char *argv[]){
     //     PROFILE_SCOPE("A SCOPE THAT I PROFILE");
     //     int a = 1 + 2;
     // }
+    std::string file = "circle_2d.msh";
+    if(argc == 2){
+        file = std::string(argv[1]);
+    }
     
     try{
-        Mesh_Quality::GmshHandler::Get().LoadMesh("circle_2d.msh");
+        Mesh_Quality::GmshHandler::Get().LoadMesh(file);
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
         auto areas = mesh.Area();
         Mesh_Quality::GmshHandler::Get().DisplayElementData("Area", areas);

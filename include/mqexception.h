@@ -5,6 +5,6 @@
 namespace Mesh_Quality{
     class MqException: std::exception{
     public:
-        virtual const char* what() = 0;
+        const char* what() const noexcept {return "Mesh Quality Module Error";};
     };
 }

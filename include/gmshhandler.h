@@ -21,14 +21,14 @@
 namespace Mesh_Quality{
     class NoMeshLoadedException: MqException{
     public:
-        const char* what(){
+        const char* what() const noexcept{
             return "No Mesh is loaded in the module";
         }
     };
 
     class GmshNotInitializedException: MqException{
     public:
-        const char* what(){
+        const char* what() const noexcept{
             return "Gmsh isnt initialized";
         }
     };
@@ -39,7 +39,6 @@ namespace Mesh_Quality{
         bool m_meshloaded = false;
         bool m_gmsh_init= false;
         std::string m_name = "Empty Name";
-        int m_tag;
         // Disallow instantiation outside of the class
         GmshHandler(){
             PROFILE_FUNCTION;
@@ -140,7 +139,7 @@ namespace Mesh_Quality{
             gmsh::vectorpair dimtag;
             gmsh::model::getEntities(dimtag);
 
-            gmsh::view::addModelData(dimtag[0].second, 0, names[0], "ElementData", data_pair.first, data_pair.second);
+            gmsh::view::addModelData(data_view, 0, names[0], "ElementData", data_pair.first, data_pair.second);
             
         }
         void RunDisplay(){

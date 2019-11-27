@@ -30,6 +30,9 @@ if(WIN32 OR CYGWIN)
   list(APPEND EXTRA_LIBS winmm wsock32 ws2_32 psapi)
 endif()
 
+find_package(CGAL)
+list(APPEND EXTRA_LIBS CGAL::CGAL)
+
 include_directories(${GMSH_INC})
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra")
@@ -38,4 +41,3 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra")
 file(GLOB main_sources . src/*.cpp)
 
 add_subdirectory(src)
-add_subdirectory(Example)
