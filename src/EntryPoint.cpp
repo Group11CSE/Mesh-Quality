@@ -65,7 +65,9 @@ int main(int argc, char *argv[]){
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
         auto areas = mesh.Area();
         Mesh_Quality::GmshHandler::Get().DisplayElementData("Area", areas);
-        //Mesh_Quality::GmshHandler::Get().Display();
+        auto aspectratios = mesh.AspectRatio();
+        Mesh_Quality::GmshHandler::Get().DisplayElementData("AspectRatio", aspectratios);
+        Mesh_Quality::GmshHandler::Get().Display();
     }
     catch(Mesh_Quality::MqException& e){
         Mesh_Quality::Logger::Get().Error("An Error occured in the module:", e.what());

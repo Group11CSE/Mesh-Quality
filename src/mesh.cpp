@@ -65,6 +65,21 @@ namespace Mesh_Quality{
         return areas;
     }
 
+    std::map<std::size_t, double> Mesh::AspectRatio(){
+        PROFILE_FUNCTION;
+
+        std::map<std::size_t, double> areas;
+        for(auto const& element: m_elements){
+            try{
+                areas[element.first] = element.second->AspectRatio(m_vertices);
+            }
+            catch(std::exception& e){
+                Logger::Get().Warn("No aspect ratio implemented for anything else than triangles or quadrilaterals");
+            }
+        }
+        return areas;
+    }
+
     std::ostream& operator<<(std::ostream& os, const Mesh& mesh){
         os << mesh.m_name << std::endl;
         os << "-------Vertices-------" << std::endl;

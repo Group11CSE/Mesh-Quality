@@ -25,19 +25,71 @@ namespace Mesh_Quality{
     }
 
     double Element::Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices){
-            PROFILE_FUNCTION;
-            std::vector<Point> points;
+        PROFILE_FUNCTION;
+        std::vector<Point> points;
 
-            for(const auto &tag: m_tags){
-                auto p = vertices.find(tag);
-                if(p == vertices.end()) throw NotSupportedException();
-                double x = p->second->m_x;
-                double y = p->second->m_y;
-                points.push_back(Point(x, y));
+        for(const auto &tag: m_tags){
+            auto p = vertices.find(tag);
+            if(p == vertices.end()) throw MqException();
+            double x = p->second->m_x;
+            double y = p->second->m_y;
+            points.push_back(Point(x, y));
+        }
+
+        Polygon_2 polygon (points.begin(), points.end());
+        double area = polygon.area();
+        return area;
+    }
+
+    double Element::AspectRatio(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices){
+        PROFILE_FUNCTION;
+        std::vector<Point> points;
+
+        if(m_tags.size() != 3 && m_tags.size() != 4) throw NotSupportedException();
+
+        for(const auto &tag: m_tags){
+            auto p = vertices.find(tag);
+            if(p == vertices.end()) throw MqException();
+            double x = p->second->m_x;
+            double y = p->second->m_y;
+            points.push_back(Point(x, y));
+        }
+
+        // handling triangles
+        if(points.size() == 3){
+            Triangle_2 triangle(points[0], points[1], points[2]);
+            if(triangle.is_degenerate()){
+                return -1;
+            }
+            std::vector<double> lengths = {Vector_2(points[1]-points[0]).squared_length(),
+                                           Vector_2(points[2]-points[1]).squared_length(),
+                                           Vector_2(points[0]-points[2]).squared_length()};
+
+            // sorts the lengths from biggest to smallest
+            std::sort(lengths.begin(), lengths.end());
+            return sqrt(lengths[0]/lengths[2]);
+        }
+
+        else if(points.size() == 4){
+            Triangle_2 triangle(points[0], points[1], points[2]);
+            if(triangle.is_degenerate()){
+                return -1;
             }
 
-            Polygon_2 polygon (points.begin(), points.end());
-            double area = polygon.area();
-            return area;
-        };
+            Triangle_2 triangle2(points[0], points[2], points[3]);
+            if(triangle2.is_degenerate()){
+                return -1;
+            }
+            std::vector<double> lengths = {Vector_2(points[1]-points[0]).squared_length(),
+                                           Vector_2(points[2]-points[1]).squared_length(),
+                                           Vector_2(points[3]-points[2]).squared_length(),
+                                           Vector_2(points[0]-points[3]).squared_length()};
+
+            // sorts the lengths from biggest to smallest
+            std::sort(lengths.begin(), lengths.end());
+            return sqrt(lengths[1]/lengths[2]);
+        }
+
+        return -1;
+    }
 }

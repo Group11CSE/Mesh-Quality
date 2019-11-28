@@ -26,6 +26,8 @@
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef K::Point_2 Point;
 typedef CGAL::Polygon_2<K> Polygon_2;
+typedef CGAL::Triangle_2<K> Triangle_2;
+typedef CGAL::Vector_2<K> Vector_2;
 
 namespace Mesh_Quality{
 
@@ -60,6 +62,7 @@ namespace Mesh_Quality{
 
         // TODO: Implem,ent a function that returns skewness, aspect ratio etc
         double Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices);
+        double AspectRatio(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices);
     private:
         int m_type;
         std::vector<std::size_t> m_tags;
