@@ -31,7 +31,9 @@ void test_function(void){
 int main(int argc, char *argv[]){
     // Starting Profiling and Logging session
     START_PROFILING_SESSION("Main");
+    #ifdef PROFILING
     InstrumentationTimer timer(_CUSTOM_FUNC_SIG_);
+    #endif
     Mesh_Quality::Logger::Get().BeginSession("Main Logging");
     Mesh_Quality::Logger::Get().SetLogLevel(Mesh_Quality::LogLevel::Warn);
     #ifdef DEBUG
@@ -58,11 +60,12 @@ int main(int argc, char *argv[]){
     }
     
     try{
+        Mesh_Quality::Logger::Get().Debug("I am in debug");
         Mesh_Quality::GmshHandler::Get().LoadMesh(file);
         auto mesh = Mesh_Quality::GmshHandler::Get().GetExplicitMesh();
         auto areas = mesh.Area();
         Mesh_Quality::GmshHandler::Get().DisplayElementData("Area", areas);
-        Mesh_Quality::GmshHandler::Get().Display();
+        //Mesh_Quality::GmshHandler::Get().Display();
     }
     catch(Mesh_Quality::MqException& e){
         Mesh_Quality::Logger::Get().Error("An Error occured in the module:", e.what());
@@ -70,7 +73,9 @@ int main(int argc, char *argv[]){
     catch(const std::exception& e){
         Mesh_Quality::Logger::Get().Fatal("An exception Occured that is not related to the Mesh Qualityu module:", e.what());
     }
-
+    
+    #ifdef PROFILING
     timer.~InstrumentationTimer();
+    #endif
     END_PROFILING_SESSION();
 }

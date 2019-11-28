@@ -47,7 +47,7 @@ namespace Mesh_Quality{
     class Element{
     public:
         Element(int type, std::vector<std::size_t> tags): m_type(type), m_tags(tags){};
-        int GetType(){return m_type;};
+        inline int GetType(){return m_type;};
 
         // Defining custom iterators to make code more expressive, we can only ever
         // iterate over the tags of the Element, because everything else is not 
@@ -59,22 +59,7 @@ namespace Mesh_Quality{
 
 
         // TODO: Implem,ent a function that returns skewness, aspect ratio etc
-        double Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices){
-            PROFILE_FUNCTION;
-            std::vector<Point> points;
-
-            for(const auto &tag: m_tags){
-                auto p = vertices.find(tag);
-                if(p == vertices.end()) throw NotSupportedException();
-                double x = p->second->m_x;
-                double y = p->second->m_y;
-                points.push_back(Point(x, y));
-            }
-
-            Polygon_2 polygon (points.begin(), points.end());
-            double area = polygon.area();
-            return area;
-        };
+        double Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices);
     private:
         int m_type;
         std::vector<std::size_t> m_tags;

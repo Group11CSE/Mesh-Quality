@@ -23,4 +23,21 @@ namespace Mesh_Quality{
         os << "x: " << vert.m_x << ", y: " << vert.m_y << ", z: " << vert.m_x;
         return os;
     }
+
+    double Element::Area(const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices){
+            PROFILE_FUNCTION;
+            std::vector<Point> points;
+
+            for(const auto &tag: m_tags){
+                auto p = vertices.find(tag);
+                if(p == vertices.end()) throw NotSupportedException();
+                double x = p->second->m_x;
+                double y = p->second->m_y;
+                points.push_back(Point(x, y));
+            }
+
+            Polygon_2 polygon (points.begin(), points.end());
+            double area = polygon.area();
+            return area;
+        };
 }

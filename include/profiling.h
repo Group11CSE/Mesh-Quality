@@ -28,7 +28,7 @@
 
 
 #pragma once
-#define PROFILING
+// #define PROFILING
 
 // Preprocessor definitons for function signature
 // and only doping profiling if one of the major compilers is used

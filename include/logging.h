@@ -33,6 +33,7 @@ namespace Mesh_Quality{
     };
 
     enum LogLevel{
+        Debug,
         Info,
         Warn,
         Error,
@@ -48,7 +49,7 @@ namespace Mesh_Quality{
         void Log(const std::string& Message, LogLevel level){
             PROFILE_FUNCTION;
             m_OutputStream << Message << std::endl;
-            if(level >= m_level){
+            if(level >= m_level || level == LogLevel::Debug){
                 std::cout << Message << std::endl;
             }
         }
@@ -127,6 +128,17 @@ namespace Mesh_Quality{
             message << "FATAL_MQ:\t";
             assembler(message, args...);
             Log(message.str(), LogLevel::Fatal);
+        }
+
+        template <class... Ts>
+        void Debug(Ts const&... args){
+            #ifdef DEBUG
+            PROFILE_FUNCTION;
+            std::stringstream message;
+            message << "DEBUG_MQ:\t";
+            assembler(message, args...);
+            Log(message.str(), LogLevel::Debug);
+            #endif
         }
 
         static Logger& Get(){

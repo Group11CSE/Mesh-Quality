@@ -36,6 +36,7 @@ namespace Mesh_Quality{
                 std::vector<std::vector<std::size_t>>& nodeTagsElems);
         
         std::map<std::size_t, double> Area();
+        std::map<std::size_t, double> AspectRatio();
         friend std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
     private:
         std::string m_name = "No Name";
@@ -44,7 +45,6 @@ namespace Mesh_Quality{
 
 
     };
-
 
     std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
 }
