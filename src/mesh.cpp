@@ -73,7 +73,7 @@ namespace Mesh_Quality{
             try{
                 areas[element.first] = element.second->AspectRatio(m_vertices);
             }
-            catch(std::exception& e){
+            catch(const std::exception& e){
                 Logger::Get().Warn("No aspect ratio implemented for anything else than triangles or quadrilaterals");
             }
         }

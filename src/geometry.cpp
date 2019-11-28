@@ -45,7 +45,7 @@ namespace Mesh_Quality{
         PROFILE_FUNCTION;
         std::vector<Point> points;
 
-        if(m_tags.size() != 3 && m_tags.size() != 4) throw NotSupportedException();
+        if(m_tags.size() != 3 && m_tags.size() != 4) return -1;
 
         for(const auto &tag: m_tags){
             auto p = vertices.find(tag);
@@ -70,6 +70,7 @@ namespace Mesh_Quality{
             return sqrt(lengths[0]/lengths[2]);
         }
 
+        //handling quadrilaterals
         else if(points.size() == 4){
             Triangle_2 triangle(points[0], points[1], points[2]);
             if(triangle.is_degenerate()){
