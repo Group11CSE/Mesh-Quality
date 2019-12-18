@@ -53,13 +53,16 @@ for line in res.readlines():
     unsplit = line
     line = line.split()
     if (line_num > 5):
-        t_lst.append(line[0])
-        x_lst.append(line[1])
+        t_lst.append(float(line[0]))
+        x_lst.append(float(line[1]))
     line_num+=1
 res.close()
 
 print(t_lst)
 print()
 print(x_lst)
+
+plt.plot(t_lst,x_lst)
+plt.savefig("test_plot.png") 
 
 
