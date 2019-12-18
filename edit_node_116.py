@@ -55,20 +55,11 @@ for line in res.readlines():
     if (line_num > 5):
         t_lst.append(line[0])
         x_lst.append(line[1])
-##        plt.plot(line[0],line[1])
-##        print(line[0])
-##        print(line[1])
-##        print(line)
-##        print(unsplit)
     line_num+=1
+res.close()
 
-##print(t_lst)
-##print()
-##print(x_lst)
-test_x = x_lst*1000
-test_t = t_lst*1000
-##plt.plot([1E-01,2E-01,3E-01],[1E-01,2E-01,3E-01])
-plt.plot(test_x, test_t)
-plt.savefig("test_plot.png")
-plt.show()
+print(t_lst)
+print()
+print(x_lst)
+
 
